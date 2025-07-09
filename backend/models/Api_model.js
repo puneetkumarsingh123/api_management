@@ -8,4 +8,4 @@ const apiSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Api', apiSchema);
+module.exports = mongoose.model('api', apiSchema);

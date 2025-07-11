@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import ApiItem from '../components/ApiItem';
 import ApiForm from '../components/ApiForm';
@@ -7,6 +8,7 @@ import Navbar from '../components/Navbar';
 export default function Dashboard() {
   const [apis, setApis] = useState([]);
   const [editingApi, setEditingApi] = useState(null);
+  const navigate = useNavigate();
 
   const loadApis = async () => {
     try {
@@ -18,24 +20,30 @@ export default function Dashboard() {
   };
 
   const handleAddOrUpdate = async (data) => {
-  if (!data.name || !data.endpoint || !data.method) {
-    alert("Please fill in all required fields.");
-    return;
-  }
-
-  try {
-    if (editingApi) {
-      await api.put(`/${editingApi._id}`, data);
-      setEditingApi(null);
-    } else {
-      await api.post('/', data);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login first.");
+      navigate("/login");
+      return;
     }
-    loadApis();
-  } catch (err) {
-    console.error("Error saving API", err);
-  }
-};
 
+    if (!data.name || !data.endpoint || !data.method) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      if (editingApi) {
+        await api.put(`/${editingApi._id}`, data);
+        setEditingApi(null);
+      } else {
+        await api.post('/', data);
+      }
+      loadApis();
+    } catch (err) {
+      console.error("Error saving API", err);
+    }
+  };
 
   const handleDelete = async (id) => {
     try {

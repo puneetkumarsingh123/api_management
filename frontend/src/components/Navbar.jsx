@@ -4,14 +4,18 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedEmail = localStorage.getItem("email");
     setIsLoggedIn(!!token);
+    if (storedEmail) setEmail(storedEmail);
   }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setIsLoggedIn(false);
     navigate("/");
   };
@@ -22,7 +26,10 @@ export default function Navbar() {
       <div className="nav-links">
         <Link to="/">Dashboard</Link>
         {isLoggedIn ? (
-          <button onClick={logout}>Logout</button>
+          <>
+            <span>{email}</span>
+            <button onClick={logout}>Logout</button>
+          </>
         ) : (
           <Link to="/login">Login</Link>
         )}
@@ -30,3 +37,4 @@ export default function Navbar() {
     </nav>
   );
 }
+    

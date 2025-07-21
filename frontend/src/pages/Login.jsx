@@ -12,7 +12,7 @@ const loginHandler = async () => {
   try {
     const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
     localStorage.setItem('token', res.data.token);
-    localStorage.setItem('email', res.data.user.email); // or res.data.email, depending on your backend
+    localStorage.setItem('email', res.data.user.email);  
     alert("Login successful");
     navigate('/');
   } catch (err) {

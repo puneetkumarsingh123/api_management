@@ -1,79 +1,47 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../services/api';
-import ApiItem from '../components/ApiItem';
-import ApiForm from '../components/ApiForm';
 import Navbar from '../components/Navbar';
-
+import '../styles/dashboard.css';
+ 
 export default function Dashboard() {
-  const [apis, setApis] = useState([]);
-  const [editingApi, setEditingApi] = useState(null);
   const navigate = useNavigate();
 
-  const loadApis = async () => {
-    try {
-      const res = await api.get('/');
-      setApis(res.data);
-    } catch (err) {
-      console.error("Failed to load APIs", err);
-    }
-  };
-
-  const handleAddOrUpdate = async (data) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please login first.");
-      navigate("/login");
-      return;
-    }
-
-    if (!data.name || !data.endpoint || !data.method) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    try {
-      if (editingApi) {
-        await api.put(`/${editingApi._id}`, data);
-        setEditingApi(null);
-      } else {
-        await api.post('/', data);
-      }
-      loadApis();
-    } catch (err) {
-      console.error("Error saving API", err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await api.delete(`/${id}`);
-      loadApis();
-    } catch (err) {
-      console.error("Error deleting API", err);
-    }
-  };
-
-  useEffect(() => {
-    loadApis();
-  }, []);
-
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ fontFamily: 'Segoe UI, Arial, sans-serif', background: '#f7f9fa', minHeight: '100vh', padding: '2rem' }}>
       <Navbar />
-      <h2>Manage APIs</h2>
-      <div className="api-form">
-        <ApiForm onSubmit={handleAddOrUpdate} initialData={editingApi} />
-      </div>
-      <div className="api-list">
-        {apis.map(apiItem => (
-          <ApiItem
-            key={apiItem._id}
-            api={apiItem}
-            onEdit={setEditingApi}
-            onDelete={handleDelete}
-          />
-        ))}
+      <h2 style={{ color: '#2d3748', marginBottom: '1.5rem' }}>Dashboard</h2>
+      <div style={{ marginBottom: '2rem', display: 'flex', gap: '12px' }}>
+        <button
+          onClick={() => navigate('/dashboard/add')}
+          style={{ background: '#3182ce', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 18px', cursor: 'pointer', fontWeight: 500, boxShadow: '0 2px 8px #e2e8f0', transition: 'background 0.2s' }}
+          onMouseOver={e => (e.target.style.background = '#2563eb')}
+          onMouseOut={e => (e.target.style.background = '#3182ce')}
+        >
+          Add API
+        </button>
+        <button
+          onClick={() => navigate('/dashboard/list')}
+          style={{ background: '#38a169', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 18px', cursor: 'pointer', fontWeight: 500, boxShadow: '0 2px 8px #e2e8f0', transition: 'background 0.2s' }}
+          onMouseOver={e => (e.target.style.background = '#2f855a')}
+          onMouseOut={e => (e.target.style.background = '#38a169')}
+        >
+          API List
+        </button>
+        <button
+          onClick={() => navigate('/dashboard/usage')}
+          style={{ background: '#805ad5', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 18px', cursor: 'pointer', fontWeight: 500, boxShadow: '0 2px 8px #e2e8f0', transition: 'background 0.2s' }}
+          onMouseOver={e => (e.target.style.background = '#6b46c1')}
+          onMouseOut={e => (e.target.style.background = '#805ad5')}
+        >
+          Usage
+        </button>
+        <button
+          onClick={() => navigate('/dashboard/documentation')}
+          style={{ background: '#d53f8c', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 18px', cursor: 'pointer', fontWeight: 500, boxShadow: '0 2px 8px #e2e8f0', transition: 'background 0.2s' }}
+          onMouseOver={e => (e.target.style.background = '#b83280')}
+          onMouseOut={e => (e.target.style.background = '#d53f8c')}
+        >
+          Documentation
+        </button>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: function (v) {
-        return /\d/.test(v); // checks if there's at least one digit
+        return /\d/.test(v); 
       },
       message: 'Password must contain at least one number'
     }
